@@ -78,7 +78,7 @@ export default function Home() {
     <main className="h-screen bg-zinc-950 text-white flex flex-col">
       {/* Header */}
       <div className="border-b border-zinc-800 p-4">
-        <h1 className="text-xl font-semibold">Chatbot</h1>
+        <h1 className="text-xl font-semibold">Romage Chatbot</h1>
       </div>
 
       {/* Messages */}
