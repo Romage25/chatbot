@@ -1,49 +1,106 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY!
-);
+const API_KEY = process.env.GEMINI_API_KEY;
+
+if (!API_KEY) {
+  throw new Error("Missing GEMINI_API_KEY environment variable");
+}
+
+const genAI = new GoogleGenerativeAI(API_KEY);
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => {
+      return null;
+    });
+
+    if (!body || !Array.isArray(body.messages)) {
+      return NextResponse.json(
+        {
+          error: "Invalid request body. Expected { messages: [] }",
+        },
+        { status: 400 }
+      );
+    }
 
     const { messages } = body;
 
-    const formattedMessages = messages.map((msg: any) => ({
-      role: msg.role === "ai" ? "model" : "user",
-      parts: [
+    if (messages.length === 0) {
+      return NextResponse.json(
         {
-          text: msg.content,
+          error: "Messages array cannot be empty",
         },
-      ],
-    }));
+        { status: 400 }
+      );
+    }
+
+    const formattedMessages = messages.map((msg: any, index: number) => {
+      if (!msg?.role || !msg?.content) {
+        throw new Error(`Invalid message at index ${index}`);
+      }
+
+      return {
+        role: msg.role === "ai" ? "model" : "user",
+        parts: [{ text: String(msg.content) }],
+      };
+    });
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash-lite",
+      model: "gemini-2.5-flash",
     });
 
-    const result = await model.generateContent({
-      contents: formattedMessages,
-    });
+    let result;
 
-    const response =
-      result.response.text();
+    try {
+      result = await model.generateContent({
+        contents: formattedMessages,
+      });
+    } catch (err: any) {
+      console.error("Gemini API Error:", {
+        message: err?.message,
+        stack: err?.stack,
+        response: err?.response?.data,
+      });
+
+      return NextResponse.json(
+        {
+          error: "Failed to generate AI response",
+          details: err?.message || "Unknown Gemini error",
+        },
+        { status: 502 }
+      );
+    }
+
+    const responseText = result?.response?.text?.();
+
+    if (!responseText) {
+      return NextResponse.json(
+        {
+          error: "Empty response from AI model",
+        },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({
-      response,
+      response: responseText,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("Unexpected API Error:", {
+      message: error?.message,
+      stack: error?.stack,
+    });
 
     return NextResponse.json(
       {
-        error: "Something went wrong",
+        error: "Internal server error",
+        message:
+          process.env.NODE_ENV === "development"
+            ? error?.message
+            : undefined,
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }
