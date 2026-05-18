@@ -40,11 +40,8 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-        messages: [
-          ...messages,
-          userMessage,
-        ],
-      }),
+          messages: [...messages, userMessage],
+        }),
       });
 
       const data = await res.json();
@@ -70,9 +67,7 @@ export default function Home() {
     setLoading(false);
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLTextAreaElement>
-  ) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -83,9 +78,7 @@ export default function Home() {
     <main className="h-screen bg-zinc-950 text-white flex flex-col">
       {/* Header */}
       <div className="border-b border-zinc-800 p-4">
-        <h1 className="text-xl font-semibold">
-          Chatbot
-        </h1>
+        <h1 className="text-xl font-semibold">Chatbot</h1>
       </div>
 
       {/* Messages */}
@@ -101,16 +94,12 @@ export default function Home() {
             <div
               key={index}
               className={`flex ${
-                msg.role === "user"
-                  ? "justify-end"
-                  : "justify-start"
+                msg.role === "user" ? "justify-end" : "justify-start"
               }`}
             >
               <div
                 className={`max-w-[80%] rounded-2xl px-4 py-3 whitespace-pre-wrap ${
-                  msg.role === "user"
-                    ? "bg-blue-600"
-                    : "bg-zinc-800"
+                  msg.role === "user" ? "bg-blue-600" : "bg-zinc-800"
                 }`}
               >
                 {msg.content}
