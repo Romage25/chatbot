@@ -46,20 +46,56 @@ export default function Home() {
 
       const data = await res.json();
 
+      // Handle failed responses
+      if (!res.ok) {
+        let errorMessage = "Something went wrong while generating a response.";
+
+        console.log(res.status);
+
+        // custom friendly messages
+        switch (res.status) {
+          case 400:
+            errorMessage = "Your request could not be processed.";
+            break;
+
+          case 429:
+            errorMessage =
+              "Too many requests right now. Please wait a moment and try again.";
+            break;
+
+          case 503:
+            errorMessage =
+              "All AI models are currently busy. Please try again shortly.";
+            break;
+
+          case 500:
+            errorMessage = "Server error occurred. Please try again later.";
+            break;
+        }
+
+        // use backend message if available
+        if (data?.details) {
+          errorMessage = data.details;
+        }
+
+        throw new Error(errorMessage);
+      }
+
       const aiMessage: Message = {
         role: "ai",
         content: data.response,
       };
 
       setMessages((prev) => [...prev, aiMessage]);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       setMessages((prev) => [
         ...prev,
         {
           role: "ai",
-          content: "Something went wrong.",
+          content:
+            error?.message || "Unable to connect right now. Please try again.",
         },
       ]);
     }
@@ -98,8 +134,14 @@ export default function Home() {
               }`}
             >
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 whitespace-pre-wrap ${
-                  msg.role === "user" ? "bg-blue-600" : "bg-zinc-800"
+                className={`max-w-[80%] rounded-2xl px-4 py-3 whitespace-pre-wrap shadow-md ${
+                  msg.role === "user"
+                    ? "bg-blue-600"
+                    : msg.content.toLowerCase().includes("error") ||
+                        msg.content.toLowerCase().includes("try again") ||
+                        msg.content.toLowerCase().includes("unable")
+                      ? "bg-red-900/40 border border-red-500/40 text-red-100"
+                      : "bg-zinc-800"
                 }`}
               >
                 {msg.content}
@@ -108,14 +150,14 @@ export default function Home() {
           ))}
 
           {loading && (
-  <div className="flex justify-start">
-    <div className="bg-zinc-800 rounded-2xl px-4 py-3 flex items-center gap-1">
-      <span className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-      <span className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-      <span className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce"></span>
-    </div>
-  </div>
-)}
+            <div className="flex justify-start">
+              <div className="bg-zinc-800 rounded-2xl px-4 py-3 flex items-center gap-1">
+                <span className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                <span className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                <span className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce"></span>
+              </div>
+            </div>
+          )}
 
           <div ref={bottomRef} />
         </div>
