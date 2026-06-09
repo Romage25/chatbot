@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🤖 RomageBot
 
-## Getting Started
+An AI-powered chatbot web application that allows users to interact with an AI assistant through natural conversation.
 
-First, run the development server:
+---
 
-```bash
+## 🌐 Live Demo
+
+https://romagebot.vercel.app/
+
+---
+
+## 📌 Overview
+
+RomageBot is a lightweight AI chatbot web application built for real-time conversational interaction.  
+Users can send messages and receive AI-generated responses instantly through a clean and minimal chat interface.
+
+The project focuses on:
+- Simple UI/UX
+- AI-driven responses
+- Easy deployment and scalability
+
+---
+
+## ✨ Features
+
+- 💬 Real-time AI chat interface  
+- 🧠 AI-driven responses using Google AI API
+- 📱 Responsive design (desktop & mobile)  
+- 🌐 Deployed on Vercel  
+
+---
+
+## 🛠️ Tech Stack
+
+- Frontend: React / Next.js, Typescript
+- Styling: CSS / Tailwind CSS 
+- AI Integration: Google Generative AI API (Gemini)  
+- Hosting: Vercel  
+
+---
+
+## 🧩 Architecture
+
+User → Chat UI → API Route → AI Model → Response → UI Display  
+
+Flow:
+1. User sends a message via chat interface  
+2. Request is sent to backend API route  
+3. API communicates with AI model  
+4. AI returns a generated response  
+5. Response is displayed in the chat UI  
+
+---
+
+## ⚠️ Limitations
+
+- The chatbot relies on a **free-tier AI API**, which may have:
+  - Request limits (rate limiting)
+  - Slower response times during peak usage
+  - Limited token/context capacity
+- Responses may occasionally be inaccurate or incomplete due to model limitations
+- No persistent memory or long-term conversation storage
+- No user authentication or personalized profiles
+
+---
+
+## 🚀 Running Locally
+
+Clone the repository:
+
+git clone https://github.com/your-username/romagebot.git
+cd romagebot
+
+Install dependencies:
+
+npm install
+
+Start development server:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open in browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🚀 Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Deploy easily using Vercel:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Push project to GitHub  
+2. Import repository in Vercel  
+3. Add environment variables  
+4. Deploy  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📌 Future Improvements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Chat history persistence  
+- Streaming responses for smoother UX  
+- Improved prompt engineering  
+- User authentication (optional)  
+- UI/UX enhancements  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 👨‍💻 Author
+
+Built by a developer exploring AI chatbot applications and modern web development.
